@@ -1,0 +1,8 @@
+name: RPG Plugin
+version: '${project.version}'
+main: com.optivat.plugin.Main
+api-version: 1.18
+prefix: [ RPGA ]
+loadbefore: [ RPGP ]
+authors: [ Optivat ]
+description: A RPG plugin that will probably never be released, but its a test.
