@@ -22,7 +22,7 @@ public class MobSpawn implements Listener {
             Location loc = bombs.getLocation(); loc.add(0, 1, 0);
             ArmorStand as = bombs.getWorld().spawn(loc, ArmorStand.class);
             totalMobs.add(new MobEntity(bombs, as));
-            MobEntity mobEntity = MobEntity.getMob(bombs.uuid);
+            MobEntity mobEntity = MobEntity.getMob(bombs.getUniqueId());
             as.setVisible(false);
             as.setGravity(false);
             as.setInvulnerable(true);
