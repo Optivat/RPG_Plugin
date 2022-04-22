@@ -1,9 +1,8 @@
 package com.optivat.plugin.Entities;
 
-import com.optivat.plugin.Events.MobSpawn;
+import com.optivat.plugin.Main;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
 
 import java.util.UUID;
@@ -12,22 +11,31 @@ public class MobEntity {
     private Mob mob;
     private int acHp;
     private int imHp;
+    private int currentimHp;
     private int level;
     private int strength;
     private int damage;
+    private int defense;
     private UUID uuid;
     private ArmorStand armorStand;
     private boolean alive;
     private Location loc;
+    private static Main main;
+
+    public MobEntity(Main main) {
+        this.main = main;
+    }
 
 
     public MobEntity(Mob mob, ArmorStand as) {
         this.mob = mob;
         acHp = (int) mob.getHealth();
-        level = (int)((acHp/10)*(Math.random()*5));
-        strength = level/2;
-        damage = strength/3;
-        imHp = (level%100)+(int)(Math.random()*50);
+        level = (int)((acHp)*(Math.random()*5));
+        strength = level;
+        damage = strength/2;
+        defense = (int)(level*(1+Math.random()*2));
+        imHp = (level)*(int)(1+Math.random()*50);
+        currentimHp = imHp;
         uuid = mob.getUniqueId();
         armorStand = as;
         alive = true;
@@ -40,6 +48,8 @@ public class MobEntity {
     public int getACHP() {
         return acHp;
     }
+    public int getIMHP() { return imHp; }
+    public int getCurrentIMHP() { return currentimHp;}
     public int getLevel() {
         return level;
     }
@@ -49,6 +59,7 @@ public class MobEntity {
     public int getDamage() {
         return damage;
     }
+    public int getDefense() { return defense; }
     public UUID getUUID() {
         return uuid;
     }
@@ -62,15 +73,18 @@ public class MobEntity {
         return loc;
     }
 
+    public void setAlive(boolean a) { alive = a; }
+    public void setCurrentIMHP(int cimhp) { currentimHp = cimhp; }
     public void setLocation(Location location) {
         loc = location;
     }
+    public void setArmorStand(ArmorStand as) {armorStand = as;}
 
 
 
 
     public static MobEntity getMob(UUID uuid) {
-        for(MobEntity mob: MobSpawn.totalMobs) {
+        for(MobEntity mob: main.totalMobs) {
             if (mob.uuid == uuid) {
                 return mob;
             }
