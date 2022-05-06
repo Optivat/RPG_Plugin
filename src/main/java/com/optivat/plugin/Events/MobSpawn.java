@@ -44,7 +44,7 @@ public class MobSpawn implements Listener {
                             mobEntity.setLocation(loc);
                             loc.add(0, 0.5, 0);
                             as.teleport(loc);
-                            as.setCustomName(ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + mobEntity.getLevel() + ChatColor.DARK_GRAY + "]" + " " + ChatColor.RED + mobEntity.getMob().getName() + " " + ChatColor.YELLOW + mobEntity.getCurrentIMHP() + "/" + mobEntity.getIMHP());
+                            as.setCustomName(ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + "Lv" + mobEntity.getLevel() + ChatColor.DARK_GRAY + "]" + " " + ChatColor.RED + mobEntity.getMob().getName() + " " + ChatColor.YELLOW + mobEntity.getCurrentIMHP() + "/" + mobEntity.getIMHP());
                             mobEntity.setArmorStand(as);
                         } else {
                             mobEntity.getArmorStand().remove();
@@ -66,7 +66,6 @@ public class MobSpawn implements Listener {
         if(e.getEntity() instanceof Mob) {
             MobEntity mobEntity = MobEntity.getMob(e.getEntity().getUniqueId());
             main.totalMobs.remove(mobEntity);
-            mobEntity.getArmorStand().remove();
         }
     }
 }

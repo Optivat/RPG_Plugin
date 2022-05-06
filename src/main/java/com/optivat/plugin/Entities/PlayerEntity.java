@@ -12,6 +12,8 @@ public class PlayerEntity {
         private Player player;
         private int maxHp;
         private int currentHp;
+        private int regenRateHp;
+        private int defense;
         private int strength;
         private int damage;
         private UUID uuid;
@@ -25,17 +27,21 @@ public class PlayerEntity {
 
         public PlayerEntity(Player p) {
             this.player = p;
-            maxHp = (int) p.getHealth()*5;
+            maxHp = 100;
             strength = 20;
             damage = strength/4;
             currentHp = maxHp;
+            regenRateHp = 5;
             uuid = p.getUniqueId();
             loc = p.getLocation();
+            defense = 0;
 
         }
         public Player getPlayer() { return player; }
         public int getMaxHP() { return maxHp; }
         public int getCurrentHP() { return currentHp; }
+        public int getRegenRateHp() { return regenRateHp; }
+        public int getDefense() { return defense; }
         public int getStrength() { return strength; }
         public int getDamage() { return damage; }
         public UUID getUUID() { return uuid; }

@@ -11,6 +11,7 @@ public class MobEntity {
     private Mob mob;
     private int acHp;
     private int imHp;
+    private int regenRateHp;
     private int currentimHp;
     private int level;
     private int strength;
@@ -30,7 +31,7 @@ public class MobEntity {
     public MobEntity(Mob mob, ArmorStand as) {
         this.mob = mob;
         acHp = (int) mob.getHealth();
-        level = (int)((acHp)*(Math.random()*5));
+        level = (int)((acHp)*(Math.random()*2));
         strength = level;
         damage = strength/2;
         defense = (int)(level*(1+Math.random()*2));
@@ -40,7 +41,6 @@ public class MobEntity {
         armorStand = as;
         alive = true;
         loc = mob.getLocation();
-
     }
     public Mob getMob() {
         return mob;
@@ -49,6 +49,7 @@ public class MobEntity {
         return acHp;
     }
     public int getIMHP() { return imHp; }
+    public int getRegenRateHp() { return regenRateHp; }
     public int getCurrentIMHP() { return currentimHp;}
     public int getLevel() {
         return level;

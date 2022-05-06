@@ -1,5 +1,6 @@
 package com.optivat.plugin;
 
+import com.nesaak.noreflection.NoReflection;
 import com.optivat.plugin.Entities.MobEntity;
 import com.optivat.plugin.Entities.PlayerEntity;
 import com.optivat.plugin.Events.MobEntityInterActPlayerEntity;
@@ -18,6 +19,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        NoReflection.shared();
         mobEntity = new MobEntity(this);
         playerEntity = new PlayerEntity(this);
         Bukkit.getPluginManager().registerEvents(new MobSpawn(this), this);
