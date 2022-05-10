@@ -31,7 +31,6 @@ public class CustomItemStack extends ItemStack implements Listener {
         itemMeta = item.getItemStack().getItemMeta();
         id = item.getUniqueId();
         ownerID = item.getOwner();
-        Material.ACACIA_FENCE
     }
     public CustomItemStack(ItemStack itemStack, Player player) {
         itemMeta = itemStack.getItemMeta();

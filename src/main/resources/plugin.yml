@@ -6,3 +6,6 @@ prefix: [ RPGA ]
 loadbefore: [ RPGP ]
 authors: [ Optivat ]
 description: A RPG plugin that will probably never be released, but its a test.
+commands:
+  createitem:
+    description: To add a custom item into YOUR inventory.
