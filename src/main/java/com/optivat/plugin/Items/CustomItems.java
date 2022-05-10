@@ -2,8 +2,11 @@ package com.optivat.plugin.Items;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
 
 public enum CustomItems {
     WOODEN_WAND("Wooden Wand",2, 20, 5, 10, 10, 100, new ItemStack(Material.STICK), true, "SHOOTER", "You shoot wood and give people plenty of splinters.");
@@ -35,10 +38,15 @@ public enum CustomItems {
         critChance = cC;
         strength = s;
         mana = m;
-        this.itemStack = itemStack;
+        ability = iA;
+        abilityDesc = desciA;
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(getRarityColor() + name);
         String[] abilityDesc = desciA.split(" ");
+        itemMeta.setLore(createItemLore());
+        if(isEnchanted) {
+            itemMeta.addEnchant(Enchantment.LUCK, 1, true);
+        }
     }
 
     private String getName() {return name;}
@@ -96,4 +104,24 @@ public enum CustomItems {
     private int getStrength() {return strength;}
     private int getMana() {return mana;}
     private ItemStack getItemStack() {return itemStack;}
+
+
+    private ArrayList<String> createItemLore() {
+        ArrayList<String> itemLore = new ArrayList<>();
+        if(damage != 0) {
+            itemLore.add(ChatColor.GRAY + "Damage: " + ChatColor.RED + "+" + damage);
+        }
+        if(strength != 0) {
+            itemLore.add(ChatColor.GRAY + "Strength: " + ChatColor.RED + "+" + strength);
+        }
+        if(critChance != 0) {
+            itemLore.add(ChatColor.GRAY + "Crit Chance: " + ChatColor.RED + "+" + critChance + "%");
+        }
+        if (critDamage != 0) {
+            itemLore.add(ChatColor.GRAY + "Crit Damage: " + ChatColor.RED + "+" + critDamage + "%");
+        }
+        if (mana != 0) {
+            itemLore.add(ChatColor.GRAY + "Intelligence: " + ChatColor.AQUA + mana);
+        }
+    }
 }
