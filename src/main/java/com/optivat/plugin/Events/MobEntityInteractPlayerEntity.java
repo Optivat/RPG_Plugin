@@ -52,18 +52,20 @@ public class MobEntityInteractPlayerEntity implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if(PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId()).getCurrentHP() >= PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId()).getMaxHP()) {
-                    PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId()).setCurrentHp(PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId()).getMaxHP());
+                PlayerEntity playerEntity = PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId());
+                if(playerEntity.getCurrentHP() + playerEntity.getRegenRateHp() >= playerEntity.getMaxHP()) {
+                    playerEntity.setCurrentHp(playerEntity.getMaxHP());
                 } else {
-                    PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId()).setCurrentHp(PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId()).getCurrentHP()+PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId()).getRegenRateHp());
+                    playerEntity.setCurrentHp(playerEntity.getCurrentHP()+playerEntity.getRegenRateHp());
                 }
-                double actualHearts = ((double)PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId()).getCurrentHP()/(double)PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId()).getMaxHP())*20;
-                PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId()).getPlayer().setHealth(actualHearts);
+                double actualHearts = ((double)playerEntity.getCurrentHP()/(double)playerEntity.getMaxHP())*20;
+                playerEntity.getPlayer().setHealth(actualHearts);
             }
         }.runTaskTimer(main, 10, 20);
     }
 
 
+    //End of "player class"
     @EventHandler
     public void onAttack(EntityDamageByEntityEvent e) {
         e.setCancelled(true);

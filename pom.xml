@@ -95,10 +95,6 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -108,11 +104,6 @@
             <version>1.18.1-R0.1-SNAPSHOT</version>
             <classifier>remapped-mojang</classifier>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.Nesaak</groupId>
-            <artifactId>NoReflection</artifactId>
-            <version>b9fd2940dc</version>
         </dependency>
     </dependencies>
 </project>
