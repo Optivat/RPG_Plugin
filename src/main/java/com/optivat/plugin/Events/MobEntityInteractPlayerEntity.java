@@ -118,21 +118,17 @@ public class MobEntityInteractPlayerEntity implements Listener {
                 if(!e.getPlayer().hasLineOfSight(ent)) {
                     try {
                         try {
-                            Object handle = e.getPlayer().getClass().getMethod("getHandle").invoke(e.getPlayer());
-                            //Object craftPlayer = craftPlayerClass.getMethod("getEntity", getBukkitClass("CraftServer"), net.minecraft.world.entity.Entity.class).invoke(Bukkit.getServer(), main.getServer(), e.getPlayer());
-                            handle.getClass().getMethod("hideEntity", main.getClass(), MobEntity.getMob(ent.getUniqueId()).getArmorStand().getClass()).invoke(e.getPlayer(), main, MobEntity.getMob(ent.getUniqueId()).getArmorStand());
-                            //org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer.getEntity((CraftServer) main.getServer(), (net.minecraft.world.entity.Entity) e.getPlayer());
-                            //CraftServer server = ((CraftServer) main.getServer()).getServer().server;
-                            //net.minecraft.server.level.EntityPlayer.
-                            //org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer.getEntity((org.bukkit.craftbukkit.v1_18_R1.CraftServer)main.getServer(), (net.minecraft.world.entity.Entity)e.getPlayer());
+                            Object handle = craftPlayerClass.getMethod("getHandle").invoke(e.getPlayer());
+                            Object craftPlayer = craftPlayerClass.getMethod("getEntity", getBukkitClass("CraftServer"), net.minecraft.world.entity.Entity.class).invoke(null, getBukkitClass("CraftServer").cast(main.getServer()), handle);
+                            craftPlayer.getClass().getMethod("hideEntity", org.bukkit.plugin.Plugin.class, org.bukkit.entity.Entity.class).invoke(e.getPlayer(), main, MobEntity.getMob(ent.getUniqueId()).getArmorStand());
                         } catch (IllegalAccessException | InvocationTargetException ex) {ex.printStackTrace();}
                     } catch (NoSuchMethodException  ex) {ex.printStackTrace();}
                 } else {
                     try {
                         try {
-                            Object handle = e.getPlayer().getClass().getMethod("getHandle").invoke(e.getPlayer());
-                            //Object craftPlayer = craftPlayerClass.getMethod("getEntity", getBukkitClass("CraftServer"), net.minecraft.world.entity.Entity.class).invoke(Bukkit.getServer(), main.getServer(), e.getPlayer());
-                            handle.getClass().getMethod("showEntity", main.getClass(), MobEntity.getMob(ent.getUniqueId()).getArmorStand().getClass()).invoke(e.getPlayer(), main, MobEntity.getMob(ent.getUniqueId()).getArmorStand());
+                            Object handle = craftPlayerClass.getMethod("getHandle").invoke(e.getPlayer());
+                            Object craftPlayer = craftPlayerClass.getMethod("getEntity", getBukkitClass("CraftServer"), net.minecraft.world.entity.Entity.class).invoke(null, getBukkitClass("CraftServer").cast(main.getServer()), handle);
+                            craftPlayer.getClass().getMethod("showEntity", org.bukkit.plugin.Plugin.class, org.bukkit.entity.Entity.class).invoke(e.getPlayer(), main, MobEntity.getMob(ent.getUniqueId()).getArmorStand());
                         } catch (IllegalAccessException | InvocationTargetException ex) {ex.printStackTrace();}
                     } catch (NoSuchMethodException  ex) {ex.printStackTrace();}
                 }
@@ -142,6 +138,14 @@ public class MobEntityInteractPlayerEntity implements Listener {
     public Class<?> getBukkitClass(String str) {
         try {
             return Class.forName(Bukkit.getServer().getClass().getPackage().getName() + "." + str);
+        } catch(ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public Class<?> getClass(String str) {
+        try {
+            return Class.forName(str);
         } catch(ClassNotFoundException e) {
             e.printStackTrace();
         }
