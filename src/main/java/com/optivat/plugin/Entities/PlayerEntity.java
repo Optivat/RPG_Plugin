@@ -61,5 +61,8 @@ public class PlayerEntity {
         }
         return null;
     }
+    public int calculateDamage(MobEntity mobEntity) {
+        return mobEntity.getDamage() + mobEntity.getStrength();
+    }
 
 }

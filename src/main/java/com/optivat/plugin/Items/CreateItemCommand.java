@@ -12,7 +12,7 @@ public class CreateItemCommand implements CommandExecutor {
         if(sender instanceof Player) {
             Player p = (Player) sender;
             if(args.length == 1) {
-                if (CustomItems.valueOf(args[0]) != null) {
+                if (!CustomItems.valueOf(args[0]).equals(null)) {
                     p.getInventory().addItem(CustomItems.valueOf(args[0]).getItemStack());
                 } else {
                     p.sendMessage(ChatColor.RED + "Invalid item ID!");

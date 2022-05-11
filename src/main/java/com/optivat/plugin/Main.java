@@ -6,6 +6,7 @@ import com.optivat.plugin.Events.MobEntityInteractPlayerEntity;
 import com.optivat.plugin.Events.MobSpawn;
 import com.optivat.plugin.Items.CreateItemCommand;
 import com.optivat.plugin.Items.CustomItemStack;
+import com.optivat.plugin.Items.CustomItems;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,6 +21,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        CustomItems.initalizeEvents(this);
         mobEntity = new MobEntity(this);
         playerEntity = new PlayerEntity(this);
         getCommand("createitem").setExecutor(new CreateItemCommand());

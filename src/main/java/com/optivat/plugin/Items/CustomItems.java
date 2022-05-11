@@ -1,15 +1,19 @@
 package com.optivat.plugin.Items;
 
+import com.optivat.plugin.Items.Events.WoodenWandEvent;
+import com.optivat.plugin.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 
 public enum CustomItems {
-    WOODEN_WAND("Wooden Wand",2, 20, 5, 10, 10, 100, 20, 2, new ItemStack(Material.STICK), true, "SHOOTER", "You shoot wood and give people plenty of splinters.");
+    WOODEN_WAND("Wooden Wand",2, 20, 5, 10, 10, 100, 20, 2, new ItemStack(Material.WOODEN_AXE), true, "SHOOTER", "You shoot wood and give people plenty of splinters.");
 
     private String name;
     private int rarity;
@@ -24,7 +28,7 @@ public enum CustomItems {
     private int intelligence;
     private int cooldown;
 
-    private CustomItems(String n, int r, int d, int cD, int cC, int s, int i, int m, int c, ItemStack itemStack, boolean isEnchanted) {
+    CustomItems(String n, int r, int d, int cD, int cC, int s, int i, int m, int c, ItemStack itemStack, boolean isEnchanted) {
         name = n;
         rarity = r;
         damage = d;
@@ -46,7 +50,7 @@ public enum CustomItems {
         itemStack.setItemMeta(itemMeta);
         this.itemStack = itemStack;
     }
-    private CustomItems(String n, int r, int d, int cD, int cC, int s, int i, int m, int c, ItemStack itemStack, boolean isEnchanted, String iA, String desciA) {
+    CustomItems(String n, int r, int d, int cD, int cC, int s, int i, int m, int c, ItemStack itemStack, boolean isEnchanted, String iA, String desciA) {
         name = n;
         rarity = r;
         damage = d;
@@ -63,6 +67,7 @@ public enum CustomItems {
         itemMeta.setLore(createItemLore());
         if(isEnchanted) {
             itemMeta.addEnchant(Enchantment.LUCK, 1, true);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
         itemStack.setItemMeta(itemMeta);
         this.itemStack = itemStack;
@@ -146,7 +151,7 @@ public enum CustomItems {
         if(!ability.equalsIgnoreCase("")) {
             itemLore.add(ChatColor.GOLD + "Ability: " + ability + ChatColor.YELLOW + "" + ChatColor.BOLD + " RIGHT CLICK");
             if (!abilityDesc.equalsIgnoreCase("")) {
-                String[] strings = abilityDesc.split(" ");
+                String[] strings = abilityDesc.split("\\s");
                 int x = 0;
                 String stuff = "";
                 for (String str : strings) {
@@ -168,5 +173,8 @@ public enum CustomItems {
         }
         itemLore.add(getRarity());
         return itemLore;
+    }
+    public static void initalizeEvents(Main main) {
+        Bukkit.getPluginManager().registerEvents(new WoodenWandEvent(main), main);
     }
 }
