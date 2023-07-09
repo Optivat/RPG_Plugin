@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -13,7 +14,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 
 public enum CustomItems {
-    WOODEN_WAND("Wooden Wand",2, 20, 5, 10, 10, 100, 20, 2, new ItemStack(Material.WOODEN_AXE), true, "SHOOTER", "You shoot wood and give people plenty of splinters.");
+    WOODEN_WAND("Wooden Wand",2, 20, 5, 10, 10, 100, 20, 2, new ItemStack(Material.WOODEN_AXE), true, "SHOOTER", "You shoot wood and give people plenty of splinters."),
+    BRADLEY_ITEM("Aluminum Can", 9, 420, 69, 69, 69, 1, 1, 10000, new ItemStack(Material.WATER_BUCKET), true, "Throw Can", "Can gos brrr"),
+    ISSAC_ITEM("Rat", 0, -100, -50, 0, -10000, 0, 0, 0, new ItemStack(Material.NETHERITE_AXE), true);
+
 
     private String name;
     private int rarity;
@@ -46,6 +50,7 @@ public enum CustomItems {
         itemMeta.setLore(createItemLore());
         if(isEnchanted) {
             itemMeta.addEnchant(Enchantment.LUCK, 1, true);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
         itemStack.setItemMeta(itemMeta);
         this.itemStack = itemStack;
@@ -72,6 +77,7 @@ public enum CustomItems {
         itemStack.setItemMeta(itemMeta);
         this.itemStack = itemStack;
     }
+
 
     public String getName() {return name;}
     private String getRarity() {
@@ -126,6 +132,7 @@ public enum CustomItems {
     public int getCritDamage() {return critDamage;}
     public int getCritChance() {return critChance;}
     public int getStrength() {return strength;}
+    public int getIntelligence() {return intelligence;}
     public int getMana() {return mana;}
     public ItemStack getItemStack() {return itemStack;}
 
@@ -176,5 +183,17 @@ public enum CustomItems {
     }
     public static void initalizeEvents(Main main) {
         Bukkit.getPluginManager().registerEvents(new WoodenWandEvent(main), main);
+    }
+    public static CustomItems displayNameCustom(String str) {
+        for (CustomItems ci : CustomItems.values()) {
+            if(ci.getName().contains(str)) {
+                return ci;
+            }
+            return null;
+        }
+        return null;
+    }
+    public static void notEnoughMana(Player p) {
+        p.sendMessage(ChatColor.RED + "Not enough mana!");
     }
 }

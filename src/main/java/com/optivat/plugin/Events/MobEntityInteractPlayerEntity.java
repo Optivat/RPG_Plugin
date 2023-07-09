@@ -2,6 +2,7 @@ package com.optivat.plugin.Events;
 
 import com.optivat.plugin.Entities.MobEntity;
 import com.optivat.plugin.Entities.PlayerEntity;
+import com.optivat.plugin.Items.CustomItems;
 import com.optivat.plugin.Main;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -19,6 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 
 public class MobEntityInteractPlayerEntity implements Listener {
     static Main main;
@@ -41,7 +43,10 @@ public class MobEntityInteractPlayerEntity implements Listener {
                         + "/"
                         + PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId()).getMaxHP()
                         + "❤     " + ChatColor.GREEN
-                        + PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId()).getDefense() + "❈ Defense"));
+                        + PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId()).getDefense() + "❈ Defense     "
+                        + ChatColor.AQUA + PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId()).getMana()
+                        + "/"
+                        + PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId()).getIntelligence() + "✎ Mana"));
 
             }
         }.runTaskTimer(main, 0, 5);
@@ -60,6 +65,12 @@ public class MobEntityInteractPlayerEntity implements Listener {
                 }
                 double actualHearts = ((double)playerEntity.getCurrentHP()/(double)playerEntity.getMaxHP())*20;
                 playerEntity.getPlayer().setHealth(actualHearts);
+
+                if(playerEntity.getMana() + (playerEntity.getIntelligence()/25) >= playerEntity.getIntelligence()) {
+                    playerEntity.setMana(playerEntity.getIntelligence());
+                } else {
+                    playerEntity.setCurrentHp(playerEntity.getMana()+playerEntity.getIntelligence()/25);
+                }
             }
         }.runTaskTimer(main, 10, 20);
     }
@@ -72,7 +83,12 @@ public class MobEntityInteractPlayerEntity implements Listener {
         if (e.getDamager() instanceof Player) {
             PlayerEntity playerEntity = PlayerEntity.getPlayerEntity(e.getDamager().getUniqueId());
             MobEntity mobEntity = MobEntity.getMob(e.getEntity().getUniqueId());
-            int damageDone = (int)(playerEntity.getDamage()* playerEntity.getStrength()*e.getDamage());
+            int damageDone;
+            if (playerEntity != null) {
+                damageDone = (int)(playerEntity.getDamage()* playerEntity.getStrength()* e.getDamage());
+            } else {
+                damageDone = (int)(5* playerEntity.getStrength()* e.getDamage());
+            }
             Vector PlayerLoc = e.getDamager().getLocation().getDirection();
             Location loc = new Location(e.getDamager().getWorld(), (PlayerLoc.getX() + playerEntity.getPlayer().getLocation().toVector().getX()), PlayerLoc.getY() + playerEntity.getPlayer().getLocation().toVector().getY()+1, (PlayerLoc.getZ() + playerEntity.getPlayer().getLocation().toVector().getZ()));
 
@@ -111,29 +127,78 @@ public class MobEntityInteractPlayerEntity implements Listener {
                 playerEntity.getPlayer().playSound(e.getDamager(), Sound.ENTITY_PLAYER_DEATH, 3.0F, 0.5F);
             }
         }
+        if (e.getDamager() instanceof Arrow) {
+            Arrow arrow = (Arrow) e.getDamager();
+            arrow.remove();
+            MobEntity mobEntity = MobEntity.getMob(e.getEntity().getUniqueId());
+            int damageDone = (int) (e.getDamage()*5.0*20.0);
+            Vector PlayerLoc = e.getDamager().getLocation().getDirection();
+            Location loc = new Location(e.getDamager().getWorld(), (PlayerLoc.getX() + e.getDamager().getLocation().toVector().getX()), PlayerLoc.getY() + e.getDamager().getLocation().toVector().getY()+1, (PlayerLoc.getZ() + e.getDamager().getLocation().toVector().getZ()));
+
+            ArmorStand as = e.getDamager().getWorld().spawn(loc,ArmorStand.class);
+            as.setVisible(false);
+            as.setGravity(false);
+            as.setInvulnerable(true);
+            as.setCustomNameVisible(true);
+            as.setMarker(true);
+            String damageDoneString = String.valueOf(damageDone);
+            as.setCustomName(ChatColor.GRAY + damageDoneString);
+
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    as.remove();
+                    cancel();
+                }
+            }.runTaskLater(main, 100);
+            mobEntity.setCurrentIMHP(mobEntity.getCurrentIMHP() - damageDone);
+            if(mobEntity.getCurrentIMHP() <= 0) {
+                mobEntity.getMob().remove();
+                mobEntity.setAlive(false);
+            }
+
+        }
     }
+
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
-        for(Entity ent : e.getPlayer().getNearbyEntities(30, 20, 30)) {
+        if(e.getPlayer().getInventory().getItemInMainHand() != null && CustomItems.displayNameCustom(e.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName()) != null) {
+            CustomItems customItem = CustomItems.displayNameCustom(e.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName());
+            PlayerEntity playerEntity = PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId());
+            playerEntity.setIntelligence(playerEntity.getIntelligence() + Objects.requireNonNull(customItem).getIntelligence());
+            if(playerEntity.getMana() == playerEntity.getIntelligence()) {
+                playerEntity.setMana(playerEntity.getIntelligence());
+            }
+            playerEntity.setStrength(customItem.getStrength() + playerEntity.getStrength());
+            playerEntity.setDamage(customItem.getDamage() + playerEntity.getDamage());
+        } else {
+            PlayerEntity playerEntity = PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId());
+            playerEntity.setIntelligence(playerEntity.getIntelligence());
+            if(playerEntity.getMana() == playerEntity.getIntelligence()) {
+                playerEntity.setMana(playerEntity.getIntelligence());
+            }
+            playerEntity.setStrength(playerEntity.getStrength());
+            playerEntity.setDamage(playerEntity.getDamage());
+        }
+        //Hiding armorstands near the players
+        for(Entity ent : e.getPlayer().getNearbyEntities(250, 200, 250)) {
             Class craftPlayerClass = getBukkitClass("entity.CraftPlayer");
-            if(MobEntity.getMob(ent.getUniqueId()) != null) {
-                if(!e.getPlayer().hasLineOfSight(ent)) {
+            if(!e.getPlayer().hasLineOfSight(ent) && ent instanceof ArmorStand) {
+                try {
                     try {
-                        try {
                             Object handle = craftPlayerClass.getMethod("getHandle").invoke(e.getPlayer());
                             Object craftPlayer = craftPlayerClass.getMethod("getEntity", getBukkitClass("CraftServer"), net.minecraft.world.entity.Entity.class).invoke(null, getBukkitClass("CraftServer").cast(main.getServer()), handle);
-                            craftPlayer.getClass().getMethod("hideEntity", org.bukkit.plugin.Plugin.class, org.bukkit.entity.Entity.class).invoke(e.getPlayer(), main, MobEntity.getMob(ent.getUniqueId()).getArmorStand());
-                        } catch (IllegalAccessException | InvocationTargetException ex) {ex.printStackTrace();}
-                    } catch (NoSuchMethodException  ex) {ex.printStackTrace();}
-                } else {
+                            craftPlayer.getClass().getMethod("hideEntity", org.bukkit.plugin.Plugin.class, org.bukkit.entity.Entity.class).invoke(e.getPlayer(), main, ent);
+                    } catch (IllegalAccessException | InvocationTargetException ex) {ex.printStackTrace();}
+                } catch (NoSuchMethodException  ex) {ex.printStackTrace();}
+            } else {
+                try {
                     try {
-                        try {
-                            Object handle = craftPlayerClass.getMethod("getHandle").invoke(e.getPlayer());
-                            Object craftPlayer = craftPlayerClass.getMethod("getEntity", getBukkitClass("CraftServer"), net.minecraft.world.entity.Entity.class).invoke(null, getBukkitClass("CraftServer").cast(main.getServer()), handle);
-                            craftPlayer.getClass().getMethod("showEntity", org.bukkit.plugin.Plugin.class, org.bukkit.entity.Entity.class).invoke(e.getPlayer(), main, MobEntity.getMob(ent.getUniqueId()).getArmorStand());
-                        } catch (IllegalAccessException | InvocationTargetException ex) {ex.printStackTrace();}
-                    } catch (NoSuchMethodException  ex) {ex.printStackTrace();}
-                }
+                        Object handle = craftPlayerClass.getMethod("getHandle").invoke(e.getPlayer());
+                        Object craftPlayer = craftPlayerClass.getMethod("getEntity", getBukkitClass("CraftServer"), net.minecraft.world.entity.Entity.class).invoke(null, getBukkitClass("CraftServer").cast(main.getServer()), handle);
+                        craftPlayer.getClass().getMethod("showEntity", org.bukkit.plugin.Plugin.class, org.bukkit.entity.Entity.class).invoke(e.getPlayer(), main, ent);
+                    } catch (IllegalAccessException | InvocationTargetException ex) {ex.printStackTrace();}
+                } catch (NoSuchMethodException  ex) {ex.printStackTrace();}
             }
         }
     }

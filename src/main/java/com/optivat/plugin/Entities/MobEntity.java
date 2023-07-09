@@ -42,6 +42,7 @@ public class MobEntity {
         alive = true;
         loc = mob.getLocation();
     }
+
     public Mob getMob() {
         return mob;
     }

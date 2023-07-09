@@ -12,7 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 
-public final class Main extends JavaPlugin {
+public class Main extends JavaPlugin {
 
     public ArrayList<MobEntity> totalMobs = new ArrayList<>();
     public ArrayList<PlayerEntity> totalPlayers = new ArrayList<>();

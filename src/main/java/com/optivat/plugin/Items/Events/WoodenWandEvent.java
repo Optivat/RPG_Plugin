@@ -30,6 +30,12 @@ public class WoodenWandEvent implements Listener {
     public void onClick(PlayerInteractEvent e) {
         if(!e.getAction().equals(Action.RIGHT_CLICK_AIR)) {return;}
         if(e.getItem().getItemMeta().getDisplayName().contains(CustomItems.WOODEN_WAND.getName())) {
+            PlayerEntity playerEntity = PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId());
+            if (playerEntity.getMana()-CustomItems.WOODEN_WAND.getMana() <= 0) {
+                CustomItems.notEnoughMana(e.getPlayer());
+                return;
+            }
+            playerEntity.setMana(playerEntity.getMana()-CustomItems.WOODEN_WAND.getMana());
             e.getPlayer().getWorld().getBlockAt(e.getPlayer().getLocation().add(e.getPlayer().getLocation().getDirection())).setType(Material.OAK_WOOD);
             Block block = e.getPlayer().getWorld().getBlockAt(e.getPlayer().getLocation().add(e.getPlayer().getLocation().getDirection()));
             FallingBlock wood = e.getPlayer().getWorld().spawnFallingBlock(e.getPlayer().getLocation(), block.getBlockData());
