@@ -5,6 +5,7 @@ import com.optivat.plugin.Entities.PlayerEntity;
 import com.optivat.plugin.Events.MobEntityInteractPlayerEntity;
 import com.optivat.plugin.Events.MobSpawn;
 import com.optivat.plugin.Items.CreateItemCommand;
+import com.optivat.plugin.Items.CreateItemTabComplete;
 import com.optivat.plugin.Items.CustomItemStack;
 import com.optivat.plugin.Items.CustomItems;
 import org.bukkit.Bukkit;
@@ -25,6 +26,7 @@ public class Main extends JavaPlugin {
         mobEntity = new MobEntity(this);
         playerEntity = new PlayerEntity(this);
         getCommand("createitem").setExecutor(new CreateItemCommand());
+        getCommand("createitem").setTabCompleter(new CreateItemTabComplete());
         Bukkit.getPluginManager().registerEvents(new MobSpawn(this), this);
         Bukkit.getPluginManager().registerEvents(new MobEntityInteractPlayerEntity(this), this);
         Bukkit.getPluginManager().registerEvents(new CustomItemStack(this), this);

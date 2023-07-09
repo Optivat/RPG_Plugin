@@ -20,6 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.NumberFormat;
 import java.util.Objects;
 
 public class MobEntityInteractPlayerEntity implements Listener {
@@ -50,10 +51,6 @@ public class MobEntityInteractPlayerEntity implements Listener {
 
             }
         }.runTaskTimer(main, 0, 5);
-    }
-
-    @EventHandler
-    public void onJoinHeal(PlayerJoinEvent e) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -69,7 +66,7 @@ public class MobEntityInteractPlayerEntity implements Listener {
                 if(playerEntity.getMana() + (playerEntity.getIntelligence()/25) >= playerEntity.getIntelligence()) {
                     playerEntity.setMana(playerEntity.getIntelligence());
                 } else {
-                    playerEntity.setCurrentHp(playerEntity.getMana()+playerEntity.getIntelligence()/25);
+                    playerEntity.setMana(playerEntity.getMana()+playerEntity.getIntelligence()/25);
                 }
             }
         }.runTaskTimer(main, 10, 20);
@@ -93,12 +90,15 @@ public class MobEntityInteractPlayerEntity implements Listener {
             Location loc = new Location(e.getDamager().getWorld(), (PlayerLoc.getX() + playerEntity.getPlayer().getLocation().toVector().getX()), PlayerLoc.getY() + playerEntity.getPlayer().getLocation().toVector().getY()+1, (PlayerLoc.getZ() + playerEntity.getPlayer().getLocation().toVector().getZ()));
 
             ArmorStand as = playerEntity.getPlayer().getWorld().spawn(loc,ArmorStand.class);
+
             as.setVisible(false);
             as.setGravity(false);
             as.setInvulnerable(true);
             as.setCustomNameVisible(true);
             as.setMarker(true);
-            String damageDoneString = String.valueOf(damageDone);
+
+            NumberFormat format = NumberFormat.getInstance();
+            String damageDoneString = format.format(damageDone);
             as.setCustomName(ChatColor.GRAY + damageDoneString);
 
             new BukkitRunnable() {
@@ -141,7 +141,8 @@ public class MobEntityInteractPlayerEntity implements Listener {
             as.setInvulnerable(true);
             as.setCustomNameVisible(true);
             as.setMarker(true);
-            String damageDoneString = String.valueOf(damageDone);
+            NumberFormat format = NumberFormat.getInstance();
+            String damageDoneString = format.format(damageDone);
             as.setCustomName(ChatColor.GRAY + damageDoneString);
 
             new BukkitRunnable() {
@@ -162,7 +163,8 @@ public class MobEntityInteractPlayerEntity implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
-        if(e.getPlayer().getInventory().getItemInMainHand() != null && CustomItems.displayNameCustom(e.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName()) != null) {
+        if(e.getPlayer().getInventory().getItemInMainHand().getItemMeta() == null) {return;}
+        if(CustomItems.displayNameCustom(e.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName()) != null) {
             CustomItems customItem = CustomItems.displayNameCustom(e.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName());
             PlayerEntity playerEntity = PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId());
             playerEntity.setIntelligence(playerEntity.getIntelligence() + Objects.requireNonNull(customItem).getIntelligence());
@@ -171,14 +173,6 @@ public class MobEntityInteractPlayerEntity implements Listener {
             }
             playerEntity.setStrength(customItem.getStrength() + playerEntity.getStrength());
             playerEntity.setDamage(customItem.getDamage() + playerEntity.getDamage());
-        } else {
-            PlayerEntity playerEntity = PlayerEntity.getPlayerEntity(e.getPlayer().getUniqueId());
-            playerEntity.setIntelligence(playerEntity.getIntelligence());
-            if(playerEntity.getMana() == playerEntity.getIntelligence()) {
-                playerEntity.setMana(playerEntity.getIntelligence());
-            }
-            playerEntity.setStrength(playerEntity.getStrength());
-            playerEntity.setDamage(playerEntity.getDamage());
         }
         //Hiding armorstands near the players
         for(Entity ent : e.getPlayer().getNearbyEntities(250, 200, 250)) {

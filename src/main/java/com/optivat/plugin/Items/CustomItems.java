@@ -32,16 +32,16 @@ public enum CustomItems {
     private int intelligence;
     private int cooldown;
 
-    CustomItems(String n, int r, int d, int cD, int cC, int s, int i, int m, int c, ItemStack itemStack, boolean isEnchanted) {
-        name = n;
-        rarity = r;
-        damage = d;
-        critDamage = cD;
-        critChance = cC;
-        strength = s;
-        intelligence = i;
-        mana = m;
-        cooldown = c;
+    CustomItems(String name, int rarity, int damage, int critDamage, int critChance, int strength, int intelligence, int manaCost, int cooldown, ItemStack itemStack, boolean isEnchanted) {
+        this.name = name;
+        this.rarity = rarity;
+        this.damage = damage;
+        this.critDamage = critDamage;
+        this.critChance = critChance;
+        this.strength = strength;
+        this.intelligence = intelligence;
+        mana = manaCost;
+        this.cooldown = cooldown;
         this.itemStack = itemStack;
         ability = "";
         abilityDesc = "";
